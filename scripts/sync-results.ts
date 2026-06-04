@@ -51,7 +51,7 @@ type FixtureMatch = {
   strategy: "provider-id" | "date+teams" | "teams";
 };
 
-const dateArg = process.argv.find((arg) => arg.startsWith("--date="))?.split("=")[1] ?? process.argv[2] ?? todayIsoDate();
+const dateArg = readDateArg();
 
 async function main() {
   if (!apiKey) {
@@ -245,6 +245,17 @@ function normaliseName(value: string) {
 
 function todayIsoDate() {
   return new Date().toISOString().slice(0, 10);
+}
+
+function readDateArg() {
+  const args = process.argv.slice(2);
+  const equalsArg = args.find((arg) => arg.startsWith("--date="));
+  if (equalsArg) return equalsArg.split("=")[1];
+
+  const dateFlagIndex = args.indexOf("--date");
+  if (dateFlagIndex !== -1) return args[dateFlagIndex + 1] ?? "";
+
+  return args[0] ?? todayIsoDate();
 }
 
 main().catch((error) => {
