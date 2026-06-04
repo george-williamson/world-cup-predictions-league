@@ -35,7 +35,7 @@ export function LeaderboardTimeline({
       <div className="race-board panel">
         <div className="race-board-header">
           <div>
-            <span className="eyebrow">Race control</span>
+            <span className="eyebrow">Team standings</span>
             <h2>{viewMode === "standings" ? "Full leaderboard" : "Accuracy timeline"}</h2>
             <p className="muted">
               {viewMode === "standings"
