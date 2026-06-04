@@ -87,6 +87,7 @@ For local development only, `DISABLE_CLERK_LOCAL="true"` can bypass Clerk and us
 ```bash
 pnpm test
 pnpm build
+CONFIRM_PRODUCTION_RESET=true pnpm db:prepare:production
 pnpm api-football:teams
 pnpm odds:sync
 pnpm results:sync --date 2026-06-11

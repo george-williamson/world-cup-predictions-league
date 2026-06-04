@@ -13,6 +13,7 @@
     "db:push": "drizzle-kit push",
     "db:seed": "tsx scripts/seed.ts",
     "db:seed:demo": "tsx scripts/seed-demo.ts",
+    "db:prepare:production": "tsx scripts/prepare-production-db.ts",
     "odds:sync": "tsx scripts/sync-odds.ts",
     "api-football:teams": "tsx scripts/sync-api-football-teams.ts",
     "results:sync": "tsx scripts/sync-results.ts",
