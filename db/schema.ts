@@ -34,7 +34,10 @@ export const teams = pgTable("teams", {
   code: text("code").notNull().unique(),
   name: text("name").notNull(),
   group: text("group_name").notNull(),
-  flagUrl: text("flag_url").notNull()
+  flagUrl: text("flag_url").notNull(),
+  apiFootballTeamId: integer("api_football_team_id"),
+  apiFootballName: text("api_football_name"),
+  apiFootballUpdatedAt: timestamp("api_football_updated_at", { withTimezone: true })
 });
 
 export const rounds = pgTable("rounds", {

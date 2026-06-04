@@ -44,7 +44,7 @@ Scores and odds are stored in our own database so the app remains fast and consi
 
 Market odds are pulled in batches from The Odds API and cached against matches. Because odds providers can name teams and fixtures differently, the sync script matches by date and team names where possible, then falls back to team-pair matching.
 
-Final scores can be synced from API-Football. The free tier is limited, so the intended production pattern is deliberately quiet: schedule one score pull for the relevant match date around 30-60 minutes after the latest full-time whistle. If the provider does not match a fixture cleanly, the manual result script remains the fallback.
+Final scores can be synced from API-Football. The safest mapping path is to sync API-Football team IDs once the 2026 World Cup season is available to the API key, then use those IDs when matching result fixtures. The free tier is limited, so the intended production pattern is deliberately quiet: schedule one score pull for the relevant match date around 30-60 minutes after the latest full-time whistle. If the provider does not match a fixture cleanly, the manual result script remains the fallback.
 
 ## Production Notes
 
@@ -87,6 +87,7 @@ For local development only, `DISABLE_CLERK_LOCAL="true"` can bypass Clerk and us
 ```bash
 pnpm test
 pnpm build
+pnpm api-football:teams
 pnpm odds:sync
 pnpm results:sync --date 2026-06-11
 pnpm results:update match-1 2 1

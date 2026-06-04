@@ -27,8 +27,8 @@ type ApiFixture = {
     };
   };
   teams: {
-    home: { name: string; winner: boolean | null };
-    away: { name: string; winner: boolean | null };
+    home: { id: number; name: string; winner: boolean | null };
+    away: { id: number; name: string; winner: boolean | null };
   };
   goals: {
     home: number | null;
@@ -48,7 +48,7 @@ type ApiResponse = {
 
 type FixtureMatch = {
   fixture: ApiFixture;
-  strategy: "provider-id" | "date+teams" | "teams";
+  strategy: "provider-id" | "team-ids" | "date+teams" | "teams";
 };
 
 const dateArg = readDateArg();
@@ -159,6 +159,9 @@ function findFixture(fixtures: ApiFixture[], match: MatchWithTeams): FixtureMatc
   const providerIdMatch = fixtures.find((fixture) => String(fixture.fixture.id) === match.resultProviderFixtureId);
   if (providerIdMatch) return { fixture: providerIdMatch, strategy: "provider-id" };
 
+  const teamIdMatch = fixtures.find((fixture) => isSameApiFootballTeamPair(fixture, match));
+  if (teamIdMatch) return { fixture: teamIdMatch, strategy: "team-ids" };
+
   const home = normaliseName(displayTeam(match.homeTeam, match.homeSlot));
   const away = normaliseName(displayTeam(match.awayTeam, match.awaySlot));
   const kickoffDay = match.kickoffAt.toISOString().slice(0, 10);
@@ -210,6 +213,17 @@ function isSamePair(fixture: ApiFixture, home: string, away: string) {
   const eventHome = normaliseName(fixture.teams.home.name);
   const eventAway = normaliseName(fixture.teams.away.name);
   return (eventHome === home && eventAway === away) || (eventHome === away && eventAway === home);
+}
+
+function isSameApiFootballTeamPair(fixture: ApiFixture, match: MatchWithTeams) {
+  const homeId = match.homeTeam?.apiFootballTeamId;
+  const awayId = match.awayTeam?.apiFootballTeamId;
+  if (!homeId || !awayId) return false;
+
+  return (
+    (fixture.teams.home.id === homeId && fixture.teams.away.id === awayId) ||
+    (fixture.teams.home.id === awayId && fixture.teams.away.id === homeId)
+  );
 }
 
 function displayTeam(team: Team | null, slot: string) {
