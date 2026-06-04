@@ -91,8 +91,11 @@ pnpm api-football:teams
 pnpm odds:sync
 pnpm results:sync --date 2026-06-11
 pnpm results:update match-1 2 1
+pnpm simulate:e2e
 pnpm validate:seed
 ```
+
+`pnpm simulate:e2e` creates temporary predictors and predictions, records a couple of simulated final scores, checks that leaderboard accuracy/order changes, then removes the temporary data and restores the touched matches.
 
 ## Next Best Improvements
 

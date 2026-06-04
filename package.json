@@ -17,6 +17,7 @@
     "api-football:teams": "tsx scripts/sync-api-football-teams.ts",
     "results:sync": "tsx scripts/sync-results.ts",
     "results:update": "tsx scripts/update-result.ts",
+    "simulate:e2e": "tsx scripts/simulate-end-to-end.ts",
     "validate:seed": "tsx scripts/validate-seed.ts"
   },
   "dependencies": {
