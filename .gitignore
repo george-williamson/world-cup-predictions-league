@@ -1,0 +1,14 @@
+.next
+node_modules
+.env
+.env.local
+.vercel
+coverage
+dist
+drizzle
+*.tsbuildinfo
+.playwright-mcp
+world-cup-predictions-mobile.png
+
+# clerk configuration (can include secrets)
+/.clerk/

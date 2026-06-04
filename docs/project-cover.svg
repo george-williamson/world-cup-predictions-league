@@ -1,0 +1,56 @@
+<svg width="1280" height="640" viewBox="0 0 1280 640" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">World Cup Predictions League</title>
+  <desc id="desc">A Tomoro themed cover image showing prediction cards, a leaderboard, and a tournament timeline.</desc>
+  <rect width="1280" height="640" fill="#021F2A"/>
+  <path d="M0 0H1280V640H0V0Z" fill="url(#bg)"/>
+  <path d="M86 78C86 56 104 38 126 38H1154C1176 38 1194 56 1194 78V562C1194 584 1176 602 1154 602H126C104 602 86 584 86 562V78Z" fill="#052C3A" stroke="#9EB7C0" stroke-width="2"/>
+  <path d="M86 78C86 56 104 38 126 38H1154C1176 38 1194 56 1194 78V238H86V78Z" fill="url(#hero)"/>
+  <rect x="130" y="96" width="72" height="72" rx="16" fill="#D8FF00"/>
+  <circle cx="166" cy="132" r="20" stroke="#052C3A" stroke-width="4"/>
+  <path d="M151 127H181M166 112C172 119 175 126 175 132C175 138 172 145 166 152M166 112C160 119 157 126 157 132C157 138 160 145 166 152" stroke="#052C3A" stroke-width="4" stroke-linecap="round"/>
+  <text x="230" y="112" fill="#A9C1C8" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="800" letter-spacing="1">TOMORO TEAM LEAGUE</text>
+  <text x="230" y="165" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="700">World Cup Predictions</text>
+  <text x="230" y="205" fill="#A9C1C8" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="700">104 fixtures · 48 teams · private league</text>
+  <rect x="130" y="275" width="360" height="230" rx="20" fill="#062B38" stroke="#1C5565" stroke-width="2"/>
+  <rect x="151" y="296" width="318" height="72" rx="14" fill="#173D36" stroke="#D8FF00" stroke-width="2"/>
+  <rect x="191" y="316" width="74" height="34" rx="8" fill="#006847"/>
+  <rect x="265" y="316" width="74" height="34" rx="8" fill="#CE1126"/>
+  <rect x="228" y="316" width="74" height="34" fill="#FFFFFF"/>
+  <text x="310" y="346" text-anchor="middle" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="800">Mexico</text>
+  <rect x="151" y="389" width="318" height="72" rx="14" fill="#203838"/>
+  <text x="310" y="434" text-anchor="middle" fill="#F4C84A" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="900">Draw</text>
+  <text x="310" y="462" text-anchor="middle" fill="#A9C1C8" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="800">21% MARKET</text>
+  <rect x="530" y="275" width="360" height="230" rx="20" fill="#062B38" stroke="#1C5565" stroke-width="2"/>
+  <text x="560" y="326" fill="#D8FF00" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="900">LIVE STANDINGS</text>
+  <g font-family="Inter, Arial, sans-serif" font-weight="800">
+    <rect x="560" y="354" width="300" height="38" rx="10" fill="#D8FF00"/>
+    <text x="580" y="380" fill="#021F2A" font-size="20">1</text>
+    <text x="620" y="380" fill="#021F2A" font-size="20">Aisha Patel</text>
+    <text x="830" y="380" text-anchor="end" fill="#021F2A" font-size="20">88</text>
+    <rect x="560" y="407" width="300" height="38" rx="10" fill="#0B4154"/>
+    <text x="580" y="433" fill="#F8FAFC" font-size="20">2</text>
+    <text x="620" y="433" fill="#F8FAFC" font-size="20">Farah Khan</text>
+    <text x="830" y="433" text-anchor="end" fill="#D8FF00" font-size="20">78</text>
+    <rect x="560" y="460" width="300" height="38" rx="10" fill="#0B4154"/>
+    <text x="580" y="486" fill="#F8FAFC" font-size="20">3</text>
+    <text x="620" y="486" fill="#F8FAFC" font-size="20">Tom Lewis</text>
+    <text x="830" y="486" text-anchor="end" fill="#D8FF00" font-size="20">73</text>
+  </g>
+  <rect x="930" y="275" width="220" height="230" rx="20" fill="#062B38" stroke="#1C5565" stroke-width="2"/>
+  <text x="960" y="326" fill="#D8FF00" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="900">TIMELINE</text>
+  <path d="M960 456C989 430 1013 441 1039 410C1066 379 1090 350 1122 363" stroke="#67DDF3" stroke-width="5" stroke-linecap="round"/>
+  <path d="M960 425C992 404 1019 410 1040 388C1072 354 1096 405 1122 336" stroke="#D8FF00" stroke-width="5" stroke-linecap="round"/>
+  <path d="M960 376H1120M960 422H1120M960 468H1120" stroke="#9EB7C0" stroke-opacity=".22" stroke-width="2"/>
+  <defs>
+    <radialGradient id="bg" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(202 86) rotate(28) scale(1070 704)">
+      <stop stop-color="#163F30"/>
+      <stop offset=".5" stop-color="#022D3C"/>
+      <stop offset="1" stop-color="#021823"/>
+    </radialGradient>
+    <linearGradient id="hero" x1="86" y1="38" x2="1194" y2="238" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#123D31"/>
+      <stop offset=".55" stop-color="#062D3A"/>
+      <stop offset="1" stop-color="#021F2A"/>
+    </linearGradient>
+  </defs>
+</svg>
