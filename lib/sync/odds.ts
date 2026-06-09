@@ -238,13 +238,30 @@ function impliedProbabilities(event: OddsEvent, match: MatchWithTeams) {
 }
 
 function normaliseName(value: string) {
-  return value
+  const base = value
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
+    .replace(/&/g, " and ")
     .replace(/\b(fc|cf|sc|the|republic)\b/g, "")
     .replace(/[^a-z0-9]+/g, " ")
     .trim();
+
+  const aliases: Record<string, string> = {
+    "bosnia herzegovina": "bosnia and herzegovina",
+    bosnia: "bosnia and herzegovina",
+    "cote d ivoire": "ivory coast",
+    czech: "czechia",
+    "czech republic": "czechia",
+    "korea south": "south korea",
+    korea: "south korea",
+    turkiye: "turkey",
+    usa: "united states",
+    us: "united states",
+    "united states america": "united states"
+  };
+
+  return aliases[base] ?? base;
 }
 
 function mostRecentUpdate(markets: Array<{ updatedAt?: string }>) {
