@@ -35,7 +35,7 @@ The MVP is already wired around the core flow:
 - Fixtures, teams, flags, rounds, demo users, and sample results can be seeded.
 - Predictions are stored and can be edited while they are still open.
 - Market odds can be pulled and saved into the database.
-- Final scores can be recorded through a script.
+- Final scores can be synced automatically or recorded through a script.
 - The UI is Tomoro-themed and responsive for mobile and web.
 
 ## Results And Odds
@@ -44,7 +44,14 @@ Scores and odds are stored in our own database so the app remains fast and consi
 
 Market odds are pulled in batches from The Odds API and cached against matches. Because odds providers can name teams and fixtures differently, the sync script matches by date and team names where possible, then falls back to team-pair matching.
 
-Final scores can be synced from API-Football. The safest mapping path is to sync API-Football team IDs once the 2026 World Cup season is available to the API key, then use those IDs when matching result fixtures. The free tier is limited, so the intended production pattern is deliberately quiet: schedule one score pull for the relevant match date around 30-60 minutes after the latest full-time whistle. If the provider does not match a fixture cleanly, the manual result script remains the fallback.
+Final scores can be synced from API-Football. The safest mapping path is to sync API-Football team IDs once the 2026 World Cup season is available to the API key, then use those IDs when matching result fixtures. The free tier is limited, so the intended production pattern is deliberately quiet: schedule score pulls for the relevant match date around 30-60 minutes after full time. If the provider does not match a fixture cleanly, the manual result script remains the fallback.
+
+Production automation uses secured Cloud Run endpoints:
+
+- `GET /api/cron/sync-odds`
+- `GET /api/cron/sync-results?date=YYYY-MM-DD`
+
+Both endpoints require either `Authorization: Bearer $CRON_SECRET` or `x-cron-secret: $CRON_SECRET`.
 
 ## Production Notes
 
@@ -79,6 +86,7 @@ Copy `.env.example` to `.env.local` and provide:
 - `API_FOOTBALL_KEY`
 - `API_FOOTBALL_LEAGUE_ID`
 - `API_FOOTBALL_SEASON`
+- `CRON_SECRET`
 
 For local development only, `DISABLE_CLERK_LOCAL="true"` can bypass Clerk and use `LOCAL_DEV_USER_EMAIL`.
 
@@ -96,11 +104,10 @@ pnpm simulate:e2e
 pnpm validate:seed
 ```
 
-`pnpm simulate:e2e` creates temporary predictors and predictions, records a couple of simulated final scores, checks that leaderboard accuracy/order changes, then removes the temporary data and restores the touched matches.
+`pnpm simulate:e2e` creates temporary predictors and predictions, verifies knockout rounds are locked before the group stage completes, records simulated group and knockout results, checks that leaderboard accuracy/order and round history update, then removes the temporary data and restores the touched matches.
 
 ## Next Best Improvements
 
-- Schedule the final-score sync in GCP after match windows.
 - Add an admin results screen instead of script-only updates.
 - Add Slack reminders for upcoming round deadlines.
 - Add a proper GCP Cloud Run deployment pipeline.

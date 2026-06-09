@@ -32,7 +32,7 @@ export function isTomoroEmail(email: string) {
 }
 
 export function isPredictionAllowed(
-  match: Pick<MatchWithTeams, "round" | "kickoffAt" | "type">,
+  match: Pick<MatchWithTeams, "kickoffAt" | "type"> & { round: Pick<Round, "deadline"> },
   now = new Date(),
   options: { groupStageComplete?: boolean } = {}
 ) {

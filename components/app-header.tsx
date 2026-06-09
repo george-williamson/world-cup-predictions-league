@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
-import { BarChart3, CircleHelp, Globe2, Trophy } from "lucide-react";
+import { BarChart3, CircleHelp, Globe2, Trophy, UserRound } from "lucide-react";
 
 type AppHeaderProps = {
-  active: "predict" | "leaderboard" | "info";
+  active: "predict" | "leaderboard" | "you" | "info";
   participantCount?: number;
 };
 
@@ -46,6 +46,10 @@ export function AppHeader({ active, participantCount }: AppHeaderProps) {
             <BarChart3 size={17} />
             <span className="desktop-label">Leaderboard</span>
             <span className="mobile-label">Leaderboard</span>
+          </Link>
+          <Link className="nav-link" aria-current={active === "you" ? "page" : undefined} href="/you">
+            <UserRound size={17} />
+            You
           </Link>
         </nav>
       </div>

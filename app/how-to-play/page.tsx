@@ -49,7 +49,7 @@ const faqs = [
   },
   {
     question: "Who updates the real results?",
-    answer: "For now, results are added through the admin result script. Once a result is marked final, everyone’s accuracy updates automatically."
+    answer: "Results are synced automatically from the score provider after matches finish. Once a result is marked final, everyone’s accuracy updates automatically."
   }
 ];
 
