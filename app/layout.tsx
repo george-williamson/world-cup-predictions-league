@@ -6,7 +6,12 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "World Cup Predictions League",
-  description: "Tomoro team World Cup predictions and leaderboard"
+  description: "Tomoro team World Cup predictions and leaderboard",
+  icons: {
+    icon: "/world-cup.webp",
+    shortcut: "/world-cup.webp",
+    apple: "/world-cup.webp"
+  }
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {

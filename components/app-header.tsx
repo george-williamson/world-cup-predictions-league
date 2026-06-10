@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
-import { BarChart3, CircleHelp, Globe2, Trophy, UserRound } from "lucide-react";
+import { BarChart3, CircleHelp, Trophy, UserRound } from "lucide-react";
 
 type AppHeaderProps = {
   active: "predict" | "leaderboard" | "you" | "info";
@@ -15,7 +15,7 @@ export function AppHeader({ active, participantCount }: AppHeaderProps) {
     <header className="topbar">
       <Link className="brand" href="/">
         <span className="brand-mark">
-          <Globe2 size={18} />
+          <img src="/world-cup.webp" alt="" aria-hidden="true" />
         </span>
         <span className="brand-copy">
           <span className="brand-kicker">Tomoro team league</span>

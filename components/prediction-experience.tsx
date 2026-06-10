@@ -37,7 +37,7 @@ export function PredictionExperience({ data }: { data: BootstrapData }) {
     <section className="panel prediction-panel">
         <div className="prediction-hero">
           <div className="prediction-hero-copy">
-            <span className="eyebrow">Prediction desk</span>
+            <span className="eyebrow">Match picks</span>
             <h2>Make predictions</h2>
             <p>
               {data.currentUser?.firstName}, pick every match in the round before it locks.

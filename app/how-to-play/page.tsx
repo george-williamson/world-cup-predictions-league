@@ -1,30 +1,7 @@
-import { CalendarClock, CheckCircle2, ClipboardList, LineChart, Lock, MailCheck, Trophy } from "lucide-react";
+import { CheckCircle2, ClipboardList, LineChart, Lock, Trophy } from "lucide-react";
 
 import { AppHeader } from "@/components/app-header";
 import { getLeagueMeta } from "@/lib/queries";
-
-const steps = [
-  {
-    icon: MailCheck,
-    title: "Join with Tomoro email",
-    body: "Sign up with your first name, last name, and a @tomoro.ai email address. This keeps the league private to the team."
-  },
-  {
-    icon: ClipboardList,
-    title: "Pick match outcomes",
-    body: "For group games, choose home win, draw, or away win. For knockout games, choose the team you think will advance."
-  },
-  {
-    icon: CalendarClock,
-    title: "Complete each round",
-    body: "Matches are grouped into sensible tournament rounds. Aim to complete every match in the current round before its deadline."
-  },
-  {
-    icon: LineChart,
-    title: "Track accuracy over time",
-    body: "As results are added, the leaderboard timeline shows whether each predictor is getting hotter or colder across the tournament."
-  }
-];
 
 const faqs = [
   {
@@ -75,21 +52,6 @@ export default async function HowToPlayPage() {
           <strong>Simple rule</strong>
           <span>Correct outcome = better accuracy</span>
         </div>
-      </section>
-
-      <section className="how-steps" aria-label="How to play steps">
-        {steps.map((step) => {
-          const Icon = step.icon;
-          return (
-            <article className="how-step card" key={step.title}>
-              <span>
-                <Icon size={22} />
-              </span>
-              <h3>{step.title}</h3>
-              <p>{step.body}</p>
-            </article>
-          );
-        })}
       </section>
 
       <section className="panel rules-panel">

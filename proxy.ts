@@ -1,6 +1,12 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-const isPublicRoute = createRouteMatcher(["/sign-in(.*)", "/sign-up(.*)", "/icon.svg", "/api/cron(.*)"]);
+const isPublicRoute = createRouteMatcher([
+  "/sign-in(.*)",
+  "/sign-up(.*)",
+  "/icon.svg",
+  "/world-cup.webp",
+  "/api/cron(.*)"
+]);
 
 export default clerkMiddleware(async (auth, request) => {
   if (process.env.DISABLE_CLERK_LOCAL === "true") {
