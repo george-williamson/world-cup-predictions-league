@@ -30,7 +30,10 @@ body {
     linear-gradient(180deg, #031b27 0%, #062432 52%, #031b27 100%);
   color: var(--ink);
   font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    Aptos, "Avenir Next", "Nunito Sans", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-feature-settings: "ss01" on, "cv01" on;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 button,
@@ -128,14 +131,14 @@ a {
 
 .brand-kicker {
   font-size: 13px;
-  font-weight: 900;
+  font-weight: 800;
   letter-spacing: 0;
   text-transform: uppercase;
 }
 
 .brand-meta {
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 650;
 }
 
 .brand h1 {
@@ -143,6 +146,7 @@ a {
   font-size: clamp(24px, 3vw, 38px);
   line-height: 0.98;
   letter-spacing: 0;
+  font-weight: 650;
   overflow-wrap: anywhere;
 }
 
@@ -181,7 +185,7 @@ a {
   padding: 0 18px;
   border-radius: 6px;
   color: var(--muted);
-  font-weight: 800;
+  font-weight: 750;
   white-space: nowrap;
 }
 
@@ -198,7 +202,7 @@ a {
   background: rgba(3, 27, 39, 0.78);
   color: var(--muted);
   font-size: 13px;
-  font-weight: 850;
+  font-weight: 750;
   white-space: nowrap;
 }
 

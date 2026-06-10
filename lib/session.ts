@@ -35,19 +35,24 @@ export async function getCurrentUserId() {
   }
 
   const email = primaryEmail.toLowerCase();
+  const displayName = getDisplayName({
+    email,
+    firstName: clerkUser.firstName,
+    lastName: clerkUser.lastName
+  });
   const database = getDb();
   const [user] = await database
     .insert(users)
     .values({
-      firstName: clerkUser.firstName?.trim() || email.split("@")[0],
-      lastName: clerkUser.lastName?.trim() || "Tomoro",
+      firstName: displayName.firstName,
+      lastName: displayName.lastName,
       email
     })
     .onConflictDoUpdate({
       target: users.email,
       set: {
-        firstName: clerkUser.firstName?.trim() || email.split("@")[0],
-        lastName: clerkUser.lastName?.trim() || "Tomoro"
+        firstName: displayName.firstName,
+        lastName: displayName.lastName
       }
     })
     .returning();
@@ -83,7 +88,48 @@ async function getLocalDevUserId() {
 }
 
 function titleCase(value: string) {
-  return value.replace(/\b\w/g, (char) => char.toUpperCase());
+  return value
+    .toLowerCase()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function getDisplayName({
+  email,
+  firstName,
+  lastName
+}: {
+  email: string;
+  firstName: string | null | undefined;
+  lastName: string | null | undefined;
+}) {
+  const cleanFirst = firstName?.trim();
+  const cleanLast = lastName?.trim();
+  const emailName = nameFromEmail(email);
+
+  if (!cleanFirst && !cleanLast) {
+    return emailName;
+  }
+
+  const firstLooksLikeEmailHandle = Boolean(cleanFirst?.includes(".") || cleanFirst?.includes("_") || cleanFirst?.includes("-"));
+  const lastLooksLikeOrgPlaceholder = cleanLast?.toLowerCase() === "tomoro";
+
+  if (firstLooksLikeEmailHandle || lastLooksLikeOrgPlaceholder) {
+    return emailName;
+  }
+
+  return {
+    firstName: titleCase(cleanFirst ?? emailName.firstName),
+    lastName: titleCase(cleanLast ?? emailName.lastName)
+  };
+}
+
+function nameFromEmail(email: string) {
+  const [first = "Tomoro", ...rest] = email.split("@")[0].split(/[._-]+/).filter(Boolean);
+
+  return {
+    firstName: titleCase(first),
+    lastName: titleCase(rest.join(" ") || "Predictor")
+  };
 }
 
 export async function getCurrentAppUser() {
