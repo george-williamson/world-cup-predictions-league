@@ -1,16 +1,16 @@
 import { AppHeader } from "@/components/app-header";
 import { LeaderboardTimeline } from "@/components/leaderboard-timeline";
-import { getBootstrapData } from "@/lib/queries";
+import { getLeaderboardPageData } from "@/lib/queries";
 
 export const dynamic = "force-dynamic";
 
 export default async function LeaderboardPage() {
   try {
-    const data = await getBootstrapData();
+    const data = await getLeaderboardPageData();
 
     return (
       <main className="shell">
-        <AppHeader active="leaderboard" participantCount={data.leaderboard.length} />
+        <AppHeader active="leaderboard" participantCount={data.participantCount} />
         <LeaderboardTimeline rows={data.leaderboard} rounds={data.rounds} currentUserId={data.currentUser?.id} />
       </main>
     );

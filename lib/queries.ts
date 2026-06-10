@@ -28,46 +28,56 @@ function mapMatch(row: MatchRow): MatchWithTeams {
 }
 
 export async function getBootstrapData() {
+  const predictionData = await getPredictionData();
+  const leaderboard = await getLeaderboard();
+
+  return {
+    ...predictionData,
+    leaderboard
+  };
+}
+
+export async function getPredictionData() {
   const database = getDb();
   const userId = await getCurrentUserId();
 
-  const [currentUser] = userId ? await database.select().from(users).where(eq(users.id, userId)).limit(1) : [];
-
-  const roundRows = await database.select().from(rounds).orderBy(asc(rounds.sequence));
-  const matchRows = await database
-    .select({
-      match: matches,
-      round: rounds,
-      homeTeam: teams,
-      awayTeam: awayTeams,
-      prediction: predictions
-    })
-    .from(matches)
-    .innerJoin(rounds, eq(matches.roundId, rounds.id))
-    .leftJoin(teams, eq(matches.homeTeamId, teams.id))
-    .leftJoin(awayTeams, eq(matches.awayTeamId, awayTeams.id))
-    .leftJoin(predictions, and(eq(predictions.matchId, matches.id), userId ? eq(predictions.userId, userId) : sql`false`))
-    .orderBy(asc(rounds.sequence), asc(matches.kickoffAt), asc(matches.matchNumber));
-
-  const leaderboard = await getLeaderboard();
-  const matchCounts = await database.select({ roundId: matches.roundId, total: count() }).from(matches).groupBy(matches.roundId);
-  const userCounts = userId
-    ? await database
-        .select({ roundId: matches.roundId, total: count() })
-        .from(predictions)
-        .innerJoin(matches, eq(predictions.matchId, matches.id))
-        .where(eq(predictions.userId, userId))
-        .groupBy(matches.roundId)
-    : [];
+  const [currentUserRows, roundRows, matchRows, matchCounts, userCounts, participantRows] = await Promise.all([
+    userId ? database.select().from(users).where(eq(users.id, userId)).limit(1) : Promise.resolve([]),
+    database.select().from(rounds).orderBy(asc(rounds.sequence)),
+    database
+      .select({
+        match: matches,
+        round: rounds,
+        homeTeam: teams,
+        awayTeam: awayTeams,
+        prediction: predictions
+      })
+      .from(matches)
+      .innerJoin(rounds, eq(matches.roundId, rounds.id))
+      .leftJoin(teams, eq(matches.homeTeamId, teams.id))
+      .leftJoin(awayTeams, eq(matches.awayTeamId, awayTeams.id))
+      .leftJoin(predictions, and(eq(predictions.matchId, matches.id), userId ? eq(predictions.userId, userId) : sql`false`))
+      .orderBy(asc(rounds.sequence), asc(matches.kickoffAt), asc(matches.matchNumber)),
+    database.select({ roundId: matches.roundId, total: count() }).from(matches).groupBy(matches.roundId),
+    userId
+      ? database
+          .select({ roundId: matches.roundId, total: count() })
+          .from(predictions)
+          .innerJoin(matches, eq(predictions.matchId, matches.id))
+          .where(eq(predictions.userId, userId))
+          .groupBy(matches.roundId)
+      : Promise.resolve([]),
+    database.select({ total: count() }).from(users)
+  ]);
 
   const mappedMatches = matchRows.map((row) => mapMatch(row as MatchRow));
 
   return {
-    currentUser: currentUser ?? null,
+    currentUser: currentUserRows[0] ?? null,
     rounds: roundRows,
     matches: mappedMatches,
     groupStageComplete: isGroupStageComplete(mappedMatches),
-    leaderboard,
+    participantCount: participantRows[0]?.total ?? 0,
     completion: roundRows.map((round) => ({
       roundId: round.id,
       total: matchCounts.find((item) => item.roundId === round.id)?.total ?? 0,
@@ -76,25 +86,75 @@ export async function getBootstrapData() {
   };
 }
 
+export async function getLeaderboardPageData() {
+  const database = getDb();
+  const userId = await getCurrentUserId();
+  const [currentUserRows, roundRows, leaderboard] = await Promise.all([
+    userId ? database.select().from(users).where(eq(users.id, userId)).limit(1) : Promise.resolve([]),
+    database.select().from(rounds).orderBy(asc(rounds.sequence)),
+    getLeaderboard()
+  ]);
+
+  return {
+    currentUser: currentUserRows[0] ?? null,
+    rounds: roundRows,
+    leaderboard,
+    participantCount: leaderboard.length
+  };
+}
+
+export async function getPersonalPageData() {
+  const database = getDb();
+  const userId = await getCurrentUserId();
+  const [currentUserRows, leaderboard] = await Promise.all([
+    userId ? database.select().from(users).where(eq(users.id, userId)).limit(1) : Promise.resolve([]),
+    getLeaderboard()
+  ]);
+
+  const currentUser = currentUserRows[0] ?? null;
+
+  return {
+    currentUser,
+    currentRow: leaderboard.find((row) => row.user.id === currentUser?.id) ?? null,
+    participantCount: leaderboard.length
+  };
+}
+
 export async function getLeaderboard(): Promise<LeaderboardRow[]> {
   const database = getDb();
-  const allUsers = await database.select().from(users).orderBy(asc(users.createdAt));
-  const allRounds = await database.select().from(rounds);
-  const allMatches = await database.select().from(matches);
-  const allPredictions = await database.select().from(predictions).orderBy(asc(predictions.updatedAt));
+  const [allUsers, allRounds, allMatches, allPredictions] = await Promise.all([
+    database.select().from(users).orderBy(asc(users.createdAt)),
+    database.select().from(rounds).orderBy(asc(rounds.sequence)),
+    database.select().from(matches),
+    database.select().from(predictions).orderBy(asc(predictions.updatedAt))
+  ]);
 
   const matchById = new Map(allMatches.map((match) => [match.id, match]));
   const roundById = new Map(allRounds.map((round) => [round.id, round]));
+  const predictionsByUser = new Map<string, Prediction[]>();
+
+  for (const prediction of allPredictions) {
+    const userPredictions = predictionsByUser.get(prediction.userId) ?? [];
+    userPredictions.push(prediction);
+    predictionsByUser.set(prediction.userId, userPredictions);
+  }
 
   const rawRows = allUsers.map((user) => {
-      const userPredictions = allPredictions.filter((prediction) => prediction.userId === user.id);
+      const userPredictions = predictionsByUser.get(user.id) ?? [];
       const scoredPredictions = userPredictions
         .map((prediction) => ({ prediction, match: matchById.get(prediction.matchId) }))
         .filter((item): item is { prediction: Prediction; match: Match } => Boolean(item.match && item.match.status === "final" && item.match.actualOutcome));
+      const scoredByRound = new Map<string, Array<{ prediction: Prediction; match: Match }>>();
+
+      for (const item of scoredPredictions) {
+        const roundScored = scoredByRound.get(item.match.roundId) ?? [];
+        roundScored.push(item);
+        scoredByRound.set(item.match.roundId, roundScored);
+      }
 
       const correct = scoredPredictions.filter((item) => scorePrediction(item.prediction, item.match)).length;
       const roundAccuracy = allRounds.map((round) => {
-        const scored = scoredPredictions.filter((item) => item.match.roundId === round.id);
+        const scored = scoredByRound.get(round.id) ?? [];
         const roundCorrect = scored.filter((item) => scorePrediction(item.prediction, item.match)).length;
 
         return {

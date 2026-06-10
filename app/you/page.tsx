@@ -1,20 +1,19 @@
 import { AppHeader } from "@/components/app-header";
 import { PersonalTournament } from "@/components/personal-tournament";
-import { getBootstrapData } from "@/lib/queries";
+import { getPersonalPageData } from "@/lib/queries";
 
 export const dynamic = "force-dynamic";
 
 export default async function YouPage() {
   try {
-    const data = await getBootstrapData();
-    const currentRow = data.leaderboard.find((row) => row.user.id === data.currentUser?.id);
+    const data = await getPersonalPageData();
 
     return (
       <main className="shell">
-        <AppHeader active="you" participantCount={data.leaderboard.length} />
+        <AppHeader active="you" participantCount={data.participantCount} />
         <section className="leaderboard-page">
-          {currentRow ? (
-            <PersonalTournament row={currentRow} />
+          {data.currentRow ? (
+            <PersonalTournament row={data.currentRow} />
           ) : (
             <section className="panel personal-board">
               <div className="section-title">
