@@ -19,7 +19,6 @@ const demoUsers: DemoUser[] = [
   { firstName: "Daniel", lastName: "Okafor", email: "daniel.okafor@tomoro.ai", pickCount: 60, skill: 0.74 },
   { firstName: "Ella", lastName: "Wright", email: "ella.wright@tomoro.ai", pickCount: 58, skill: 0.56 },
   { firstName: "Farah", lastName: "Khan", email: "farah.khan@tomoro.ai", pickCount: 54, skill: 0.68 },
-  { firstName: "George", lastName: "Williamson", email: "george.demo@tomoro.ai", pickCount: 52, skill: 0.66 },
   { firstName: "Hannah", lastName: "Taylor", email: "hannah.taylor@tomoro.ai", pickCount: 48, skill: 0.61 },
   { firstName: "Isaac", lastName: "Chen", email: "isaac.chen@tomoro.ai", pickCount: 44, skill: 0.72 },
   { firstName: "Jess", lastName: "Miller", email: "jess.miller@tomoro.ai", pickCount: 41, skill: 0.58 },

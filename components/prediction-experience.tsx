@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useMemo, useState } from "react";
+import { useActionState, useEffect, useMemo, useState } from "react";
 import { CalendarClock, Handshake, Lock, Target } from "lucide-react";
 
 import { savePredictionAction, type ActionState } from "@/app/actions";
@@ -12,6 +12,7 @@ import {
   type MatchWithTeams,
   type PredictionValue
 } from "@/lib/domain";
+import { getSweepstakeOwner } from "@/lib/sweepstake";
 
 type BootstrapData = {
   currentUser: User | null;
@@ -22,8 +23,9 @@ type BootstrapData = {
 };
 
 export function PredictionExperience({ data }: { data: BootstrapData }) {
+  const now = useNow();
   const firstOpenRound = data.rounds.find((round) =>
-    data.matches.some((match) => match.round.id === round.id && isPredictionAllowed(match, new Date(), { groupStageComplete: data.groupStageComplete }))
+    data.matches.some((match) => match.round.id === round.id && isPredictionAllowed(match, now, { groupStageComplete: data.groupStageComplete }))
   );
   const [selectedRoundId, setSelectedRoundId] = useState(firstOpenRound?.id ?? data.rounds[0]?.id);
   const selectedRound = data.rounds.find((round) => round.id === selectedRoundId) ?? data.rounds[0];
@@ -37,14 +39,12 @@ export function PredictionExperience({ data }: { data: BootstrapData }) {
     <section className="panel prediction-panel">
         <div className="prediction-hero">
           <div className="prediction-hero-copy">
-            <span className="eyebrow">Prediction desk</span>
+            <span className="eyebrow">Match picks</span>
             <h2>Make predictions</h2>
             <p>
               {data.currentUser?.firstName}, pick every match in the round before it locks.
             </p>
-            <span className="deadline-chip">
-              <CalendarClock size={16} /> Deadline {selectedRound ? formatDate(selectedRound.deadline) : "pending"}
-            </span>
+            <DeadlineChip deadline={selectedRound?.deadline ?? null} now={now} />
           </div>
           <div className="round-progress">
             <Target size={20} />
@@ -68,7 +68,7 @@ export function PredictionExperience({ data }: { data: BootstrapData }) {
           {data.rounds.map((round) => {
             const completion = data.completion.find((item) => item.roundId === round.id);
             const lockedUntilGroupDone = round.type === "knockout" && !data.groupStageComplete;
-            const locked = lockedUntilGroupDone ? true : new Date() >= round.deadline;
+            const locked = lockedUntilGroupDone ? true : now >= round.deadline;
 
             return (
               <button
@@ -93,17 +93,17 @@ export function PredictionExperience({ data }: { data: BootstrapData }) {
 
         <div className="match-stack">
           {matches.map((match) => (
-            <PredictionCard key={match.id} match={match} groupStageComplete={data.groupStageComplete} />
+            <PredictionCard key={match.id} match={match} groupStageComplete={data.groupStageComplete} now={now} />
           ))}
         </div>
     </section>
   );
 }
 
-function PredictionCard({ match, groupStageComplete }: { match: MatchWithTeams; groupStageComplete: boolean }) {
+function PredictionCard({ match, groupStageComplete, now }: { match: MatchWithTeams; groupStageComplete: boolean; now: Date }) {
   const available = getAvailablePredictions(match);
   const isFinal = match.status === "final" && Boolean(match.actualOutcome);
-  const locked = isFinal || !isPredictionAllowed(match, new Date(), { groupStageComplete });
+  const locked = isFinal || !isPredictionAllowed(match, now, { groupStageComplete });
   const current = match.userPrediction?.prediction;
   const initialState: ActionState = { ok: false, message: "" };
   const scoredCorrect = isFinal && current ? current === match.actualOutcome : null;
@@ -123,7 +123,7 @@ function PredictionCard({ match, groupStageComplete }: { match: MatchWithTeams; 
             {match.venue}
           </span>
         </div>
-        <time>{formatDate(match.kickoffAt)}</time>
+        <LocalDateTime date={match.kickoffAt} />
       </div>
 
       <div className="teams" data-mode={available.includes("draw") ? "group" : "knockout"}>
@@ -238,6 +238,7 @@ function TeamPickButton({
   const team = prediction === "home" ? match.homeTeam : match.awayTeam;
   const name = team?.name ?? (prediction === "home" ? match.homeSlot : match.awaySlot);
   const flagUrl = team?.flagUrl;
+  const sweepstakeOwner = getSweepstakeOwner(team?.code);
 
   return (
     <form action={action} className="team">
@@ -255,6 +256,7 @@ function TeamPickButton({
           {flagUrl ? <img src={flagUrl} alt={`${name} flag`} /> : <span className="team-flag-placeholder" />}
         </span>
         <strong>{name}</strong>
+        {sweepstakeOwner ? <span className="sweepstake-team-tag">({sweepstakeOwner})</span> : null}
         <small>{formatMarketProbability(result.probability)}</small>
       </button>
     </form>
@@ -308,11 +310,72 @@ function venueHostFlag(venue: string) {
   return "🇺🇸";
 }
 
+function useNow() {
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    const interval = window.setInterval(() => setNow(new Date()), 30_000);
+    return () => window.clearInterval(interval);
+  }, []);
+
+  return now;
+}
+
+function DeadlineChip({ deadline, now }: { deadline: Date | null; now: Date }) {
+  if (!deadline) {
+    return (
+      <span className="deadline-chip">
+        <CalendarClock size={16} /> Deadline pending
+      </span>
+    );
+  }
+
+  return (
+    <span className="deadline-chip" title={`Deadline: ${deadline.toISOString()}`}>
+      <CalendarClock size={16} />
+      <span>Deadline {formatDate(deadline)}</span>
+      <strong>{formatCountdown(deadline, now)}</strong>
+    </span>
+  );
+}
+
+function LocalDateTime({ date }: { date: Date }) {
+  return (
+    <time dateTime={date.toISOString()} title={date.toISOString()} suppressHydrationWarning>
+      {formatDate(date)}
+    </time>
+  );
+}
+
 function formatDate(date: Date) {
   return new Intl.DateTimeFormat("en-GB", {
     day: "2-digit",
     month: "short",
     hour: "2-digit",
-    minute: "2-digit"
+    minute: "2-digit",
+    timeZoneName: "short"
   }).format(date);
+}
+
+function formatCountdown(deadline: Date, now: Date) {
+  const remainingMs = deadline.getTime() - now.getTime();
+
+  if (remainingMs <= 0) {
+    return "Locked";
+  }
+
+  const totalMinutes = Math.ceil(remainingMs / 60_000);
+  const days = Math.floor(totalMinutes / 1440);
+  const hours = Math.floor((totalMinutes % 1440) / 60);
+  const minutes = totalMinutes % 60;
+
+  if (days > 0) {
+    return `Locks in ${days}d ${hours}h`;
+  }
+
+  if (hours > 0) {
+    return `Locks in ${hours}h ${minutes}m`;
+  }
+
+  return `Locks in ${minutes}m`;
 }

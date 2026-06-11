@@ -1,16 +1,16 @@
 import { AppHeader } from "@/components/app-header";
 import { PredictionExperience } from "@/components/prediction-experience";
-import { getBootstrapData } from "@/lib/queries";
+import { getPredictionData } from "@/lib/queries";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
   try {
-    const data = await getBootstrapData();
+    const data = await getPredictionData();
 
     return (
       <main className="shell">
-        <AppHeader active="predict" participantCount={data.leaderboard.length} />
+        <AppHeader active="predict" participantCount={data.participantCount} />
 
         <PredictionExperience data={data} />
       </main>
