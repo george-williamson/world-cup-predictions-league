@@ -6,6 +6,12 @@ import { matches, predictions, rounds, teams, users, type Match, type Prediction
 import { calculateLeagueScore, isGroupStageComplete, rankLeaderboard, scorePrediction, type LeaderboardRow, type MatchWithTeams } from "@/lib/domain";
 import { seedMatches, seedRounds, seedTeams } from "@/lib/seed-data";
 import { getCurrentUserId } from "@/lib/session";
+import {
+  calculateSweepstakeAwardLeaders,
+  getUnallocatedSweepstakeTeams,
+  sweepstakeAllocationsByOwner,
+  sweepstakePrizes
+} from "@/lib/sweepstake";
 
 const awayTeams = alias(teams, "away_team");
 
@@ -117,6 +123,24 @@ export async function getPersonalPageData() {
     currentUser,
     currentRow: leaderboard.find((row) => row.user.id === currentUser?.id) ?? null,
     participantCount: leaderboard.length
+  };
+}
+
+export async function getSweepstakePageData() {
+  const database = getDb();
+  const [teamRows, matchRows, participantRows] = await Promise.all([
+    database.select().from(teams).orderBy(asc(teams.name)),
+    database.select().from(matches),
+    database.select({ total: count() }).from(users)
+  ]);
+  const teamsByCode = new Map(teamRows.map((team) => [team.code, team]));
+
+  return {
+    participantCount: participantRows[0]?.total ?? 0,
+    allocations: sweepstakeAllocationsByOwner(teamsByCode),
+    unallocatedTeams: getUnallocatedSweepstakeTeams(teamRows),
+    prizes: sweepstakePrizes,
+    awardLeaders: calculateSweepstakeAwardLeaders({ matches: matchRows, teams: teamRows })
   };
 }
 

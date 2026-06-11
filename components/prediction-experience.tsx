@@ -12,6 +12,7 @@ import {
   type MatchWithTeams,
   type PredictionValue
 } from "@/lib/domain";
+import { getSweepstakeOwner } from "@/lib/sweepstake";
 
 type BootstrapData = {
   currentUser: User | null;
@@ -237,6 +238,7 @@ function TeamPickButton({
   const team = prediction === "home" ? match.homeTeam : match.awayTeam;
   const name = team?.name ?? (prediction === "home" ? match.homeSlot : match.awaySlot);
   const flagUrl = team?.flagUrl;
+  const sweepstakeOwner = getSweepstakeOwner(team?.code);
 
   return (
     <form action={action} className="team">
@@ -254,6 +256,7 @@ function TeamPickButton({
           {flagUrl ? <img src={flagUrl} alt={`${name} flag`} /> : <span className="team-flag-placeholder" />}
         </span>
         <strong>{name}</strong>
+        {sweepstakeOwner ? <span className="sweepstake-team-tag">({sweepstakeOwner})</span> : null}
         <small>{formatMarketProbability(result.probability)}</small>
       </button>
     </form>
