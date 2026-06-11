@@ -15,7 +15,7 @@ export function AppHeader({ active, participantCount }: AppHeaderProps) {
     <header className="topbar">
       <Link className="brand" href="/">
         <span className="brand-mark">
-          <img src="/world-cup.webp" alt="" aria-hidden="true" />
+          <img src="/world-cup-clean.png" alt="" aria-hidden="true" />
         </span>
         <span className="brand-copy">
           <span className="brand-kicker">Tomoro team league</span>

@@ -16,6 +16,7 @@
     "db:seed:demo": "tsx scripts/seed-demo.ts",
     "db:prepare:production": "tsx scripts/prepare-production-db.ts",
     "odds:sync": "tsx scripts/sync-odds.ts",
+    "ai:predict": "tsx scripts/ai-predict.ts",
     "api-football:teams": "tsx scripts/sync-api-football-teams.ts",
     "results:sync": "tsx scripts/sync-results.ts",
     "results:update": "tsx scripts/update-result.ts",

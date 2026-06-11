@@ -98,11 +98,16 @@ pnpm build
 CONFIRM_PRODUCTION_RESET=true pnpm db:prepare:production
 pnpm api-football:teams
 pnpm odds:sync
+pnpm ai:predict -- --dry-run
+pnpm ai:predict -- --smoke-api
+pnpm ai:predict -- --commit
 pnpm results:sync --date 2026-06-11
 pnpm results:update match-1 2 1
 pnpm simulate:e2e
 pnpm validate:seed
 ```
+
+`pnpm ai:predict` adds the configured OpenRouter model competitors to the leaderboard. Run the dry run first, then the one-match API smoke, then `--commit` to write predictions for all currently unlocked fixtures. It requires `OPENROUTER_API_KEY` in the environment.
 
 `pnpm simulate:e2e` creates temporary predictors and predictions, verifies knockout rounds are locked before the group stage completes, records simulated group and knockout results, checks that leaderboard accuracy/order and round history update, then removes the temporary data and restores the touched matches.
 

@@ -33,4 +33,33 @@ describe("seed data", () => {
       if (match.awayCode) expect(teamCodes.has(match.awayCode)).toBe(true);
     }
   });
+
+  it("keeps match numbers and fixtures unique", () => {
+    const fixtureKeys = new Set<string>();
+
+    for (const match of seedMatches) {
+      expect(match.matchNumber).toBeGreaterThanOrEqual(1);
+      expect(match.matchNumber).toBeLessThanOrEqual(104);
+
+      const fixtureKey = [
+        match.kickoffAt,
+        match.homeCode ?? match.homeSlot,
+        match.awayCode ?? match.awaySlot,
+        match.venue
+      ].join("|");
+      expect(fixtureKeys.has(fixtureKey)).toBe(false);
+      fixtureKeys.add(fixtureKey);
+    }
+  });
+
+  it("syncs round deadlines to the first kickoff in each round", () => {
+    for (const round of seedRounds) {
+      const firstKickoff = seedMatches
+        .filter((match) => match.roundId === round.id)
+        .map((match) => match.kickoffAt)
+        .sort()[0];
+
+      expect(round.deadline).toBe(firstKickoff);
+    }
+  });
 });

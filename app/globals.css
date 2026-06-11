@@ -105,13 +105,13 @@ a {
 
 .brand-mark {
   flex: 0 0 auto;
-  width: 64px;
-  height: 64px;
+  width: 54px;
+  height: 72px;
   display: grid;
   place-items: center;
   border-radius: 8px;
   overflow: hidden;
-  background: rgba(248, 250, 252, 0.94);
+  background: rgba(248, 250, 252, 0.08);
   box-shadow:
     0 12px 26px rgba(216, 255, 0, 0.1),
     inset 0 0 0 1px rgba(248, 250, 252, 0.24);
@@ -121,7 +121,7 @@ a {
   width: 100%;
   height: 100%;
   display: block;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
 }
 
@@ -318,6 +318,7 @@ a {
   width: fit-content;
   display: inline-flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
   min-height: 34px;
   padding: 6px 12px;
@@ -326,6 +327,12 @@ a {
   background: var(--field);
   color: var(--ink);
   font-weight: 850;
+}
+
+.deadline-chip strong {
+  color: var(--green);
+  font-size: 12px;
+  text-transform: uppercase;
 }
 
 .eyebrow {
@@ -456,8 +463,9 @@ a {
 
 .rounds {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
-  overflow-x: auto;
+  overflow-x: visible;
   padding: 2px 0 12px;
   margin-bottom: 18px;
   scrollbar-color: rgba(19, 121, 91, 0.35) transparent;
@@ -1815,8 +1823,8 @@ a {
   }
 
   .brand-mark {
-    width: 48px;
-    height: 48px;
+    width: 42px;
+    height: 56px;
   }
 
   .brand h1 {
@@ -1850,6 +1858,11 @@ a {
 
   .round-button {
     min-width: 166px;
+  }
+
+  .rounds {
+    flex-wrap: nowrap;
+    overflow-x: auto;
   }
 
   .choices,

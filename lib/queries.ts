@@ -209,6 +209,13 @@ export async function getLeagueMeta() {
 
 export async function seedDatabase() {
   const database = getDb();
+  const [predictionCount] = await database.select({ total: count() }).from(predictions);
+
+  if ((predictionCount?.total ?? 0) > 0 && process.env.ALLOW_FIXTURE_RESEED !== "true") {
+    throw new Error(
+      "Refusing to seed fixtures because predictions already exist. Run a dry-run fixture migration, or set ALLOW_FIXTURE_RESEED=true only after explicit approval."
+    );
+  }
 
   await database
     .insert(rounds)

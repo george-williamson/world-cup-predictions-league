@@ -106,7 +106,7 @@ function StandingsBoard({
               <strong>
                 {row.user.firstName} {row.user.lastName}
               </strong>
-              <span>{row.user.email}</span>
+              <span>{predictorSubtitle(row.user.email)}</span>
               <small>
                 {row.correct}/{row.scored} · {row.predicted} picks · {participation.label}
               </small>
@@ -194,6 +194,10 @@ function getParticipation(row: LeaderboardRow, maxPredicted: number) {
   }
 
   return { label: "On pace", percent, tone: "good" };
+}
+
+function predictorSubtitle(email: string) {
+  return email.startsWith("ai.") ? "AI Model" : email;
 }
 
 function CombinedTimeline({

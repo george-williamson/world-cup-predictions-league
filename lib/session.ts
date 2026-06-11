@@ -6,7 +6,7 @@ import { users } from "@/db/schema";
 import { isTomoroEmail } from "@/lib/domain";
 
 const localAuthDisabled = process.env.DISABLE_CLERK_LOCAL === "true";
-const localDevEmail = process.env.LOCAL_DEV_USER_EMAIL ?? "george.demo@tomoro.ai";
+const localDevEmail = process.env.LOCAL_DEV_USER_EMAIL ?? "local.dev@tomoro.ai";
 
 export async function getCurrentUserId() {
   if (localAuthDisabled) {

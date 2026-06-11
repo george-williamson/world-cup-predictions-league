@@ -4,7 +4,7 @@ const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/icon.svg",
-  "/world-cup.webp",
+  "/world-cup-clean.png",
   "/api/cron(.*)"
 ]);
 

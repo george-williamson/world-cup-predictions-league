@@ -8,9 +8,9 @@ export const metadata: Metadata = {
   title: "World Cup Predictions League",
   description: "Tomoro team World Cup predictions and leaderboard",
   icons: {
-    icon: "/world-cup.webp",
-    shortcut: "/world-cup.webp",
-    apple: "/world-cup.webp"
+    icon: "/world-cup-clean.png",
+    shortcut: "/world-cup-clean.png",
+    apple: "/world-cup-clean.png"
   }
 };
 
